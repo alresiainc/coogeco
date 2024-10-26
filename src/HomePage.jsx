@@ -101,14 +101,14 @@ const HomePage = () => {
       <header>
         <div className="top-bar d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
-            <a href="/en" className="top-bar-link">
+            <a href="#" className="top-bar-link">
               Residential
             </a>
-            <a href="/en/business" className="top-bar-link">
+            <a href="#" className="top-bar-link">
               Business
             </a>
             <a
-              href="https://careers.cogeco.ca"
+              href="#"
               className="top-bar-link"
               target="_blank"
               rel="noreferrer"
@@ -117,14 +117,14 @@ const HomePage = () => {
             </a>
           </div>
           <div className="d-none d-lg-flex align-items-center">
-            <a href="/en" className="top-bar-link">
+            <a href="#" className="top-bar-link">
               My Account
             </a>
             <a href="/en/business" className="top-bar-link active">
               Webmail
             </a>
             <a
-              href="https://careers.cogeco.ca"
+              href="#"
               className="top-bar-link"
               target="_blank"
               rel="noreferrer"
